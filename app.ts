@@ -1,6 +1,8 @@
 const BASE_URL: string = 'https://jsonplaceholder.typicode.com/'
 const selectElm: HTMLSelectElement | null = document.querySelector('select')
 const todosContainer: HTMLDivElement = document.querySelector('.todos')!
+const tdInputElm: HTMLInputElement = document.querySelector('.add input')!
+const addTdBtnElm: HTMLButtonElement = document.querySelector('.add button')!
 
 const getUsers = async (): Promise<void> => {
     try {
@@ -41,6 +43,30 @@ const getTodoByUser = async (e: InputEvent): Promise<void> => {
     }
 }
 
+addTdBtnElm.addEventListener('click', async (e: Event): Promise<void> => {
+    try {
+
+        const res: Response = await fetch(BASE_URL + 'todos', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: tdInputElm.value,
+                userId: selectElm?.value,
+                comleted: false
+            })
+
+        })
+        const data: ToDo = await res.json()
+        console.log(data)
+        alert(`Todo #${data.id} was added successfully`)
+    } catch (err) {
+        alert(`Couldn't proccess your to do`)
+    }
+
+})
+
 selectElm?.addEventListener('change', e => getTodoByUser(e as InputEvent))
 
 getUsers()
@@ -68,4 +94,29 @@ interface User {
         }
     }
     phone: string
+}
+
+
+
+
+interface ReternOfAFunc {
+    success: boolean
+    data?: ToDo[]
+    message: string
+}
+
+
+function GoralHaGrah(): ReternOfAFunc {
+    if (Math.random() > 0.4) {
+        return {
+            success: true,
+            message:"success",
+            data:[]
+        }
+    } else {
+        return {
+            success: false,
+            message:"failure"
+        }
+    }
 }
